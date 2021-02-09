@@ -16,39 +16,46 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static double rotationPerPulse = 2048;
+    public static final String visionName = "RaspberryPi";
 
-    public static double gearRatio = 5.7;
+    public static final double kS = 0.622;//0.35;
   
-    public static double distantsPerPulse =
-     Math.PI * 0.1524 / rotationPerPulse;
-      //圓周長　／　分辨率（解析度）（一圈的脈衝數）
-    public static final double kS = 1.07;
+    public static final double kV = 0.000526;//0.0054;
   
-    public static final double kV = 0.365;
-  
-    public static final double kA = 0.008;
+    public static final double kA = 0.000124;//0.00065;
 
-    public static final double kP = 1.0;
-  
+    public static final double kP = 3.5;
+
+    public static final double kD = 0.000;
+
+    public static final double b = 2;
+
+    public static final double zeta = 0.7;
+    public static boolean isBall = false;
+
     public static class Motor{
-        public static final int leftMaster    = 19;
-        public static final int leftFollewer  = 18;
-        public static final int rightMaster   = 21;
-        public static final int rightFollower = 20;
-        public static final double distancePerPulse = 0.1524 * Math.PI / 2048 / 9.7;
-        public static final double wheelPitch = 0.7407;
+        public static final int leftMaster    = 20;
+        public static final int leftFollewer  = 21;
+        public static final int rightMaster   = 18;
+        public static final int rightFollower = 19;
+        public static final double distancePerPulse = 0.1524 * Math.PI / 2048 / 9.64;
+        public static final double wheelPitch = 0.65;
 
-        public static final boolean isRightMotorInvert = false;
-        public static final boolean isLeftMotorInvert = true;
-        public static final boolean isRightPhaseInvert = false;
-        public static final boolean isLeftPhaseInvert = true;
+        public static final boolean isRightMotorInvert = true;
+        public static final boolean isLeftMotorInvert = false;
+        public static final boolean isRightPhaseInvert = true;
+        public static final boolean isLeftPhaseInvert = false;
     }
     public static class Path{
-        public static final String slalom = "output/slalom.wpilib.json";
-        public static final String bounce = "output/bounceRace.wpilib.json";
-        public static final String barrel = "output/barrel.wpilib.json";
-        public static final String oneMeter = "output/oneMeter.wpilib.json";
-        public static final String curve = "output/curve.wpilib.json";
+        public static final String[] slalom = {"output/slalom1.wpilib.json"};
+        public static final String[] bounce = {"output/bounceRace.wpilib.json"};
+        public static final String[] barrel = {"output/barrel.wpilib.json"};
+        public static final String[] oneMeter = {"output/oneMeter.wpilib.json"};
+        public static final String[] curve = {"output/curve.wpilib.json"};
+        public static final String[] A_Blue = {"output/GalacticA_Blue.wpilib.json"};
+        public static final String[] A_Red = {"output/GalacticA_Red.wpilib.json"};
+        public static final String[] B_Blue = {"output/GalacticB_Blue.wpilib.json"};
+        public static final String[] B_Red = {"output/GalacticB_Red.wpilib.json"};
+        public static final String[] find = {"output/findBlue.wpilib.json"};
     }
 }

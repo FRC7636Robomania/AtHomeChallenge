@@ -1,9 +1,9 @@
 {
   "lengthUnit": "Meter",
   "exportUnit": "Always Meters",
-  "maxVelocity": 0.5,
+  "maxVelocity": 2.0,
   "maxAcceleration": 0.2,
-  "wheelBase": 0.7,
-  "gameName": "FIRST Power Up",
+  "wheelBase": 0.65,
+  "gameName": "Galactic Search B",
   "outputDir": "../src/main/deploy"
 }

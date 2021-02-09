@@ -8,14 +8,18 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Intake extends Spinable{
-  VictorSPX intake = new VictorSPX(3);
+  VictorSPX intake = new VictorSPX(7);
+  VictorSPX middle = new VictorSPX(1);
+  VictorSPX wing   = new VictorSPX(2);
   /** Creates a new Intake. */
   public Intake() {
     intake.configFactoryDefault();
-    intake.configPeakOutputForward(0.95);
-    intake.configPeakOutputReverse(-0.95);
-    intake.configNominalOutputForward(0.7);
-    intake.configNominalOutputReverse(-0.7);
+    intake.configPeakOutputForward(0.9);
+    intake.configPeakOutputReverse(-0.9);
+    intake.configNominalOutputForward(0.6);
+    intake.configNominalOutputReverse(-0.6);
+    middle.setInverted(true);
+    wing.setInverted(true);
   }
 
   @Override
@@ -26,15 +30,21 @@ public class Intake extends Spinable{
   @Override
   public void forward() {
     intake.set(ControlMode.PercentOutput, 0.85);
+    middle.set(ControlMode.PercentOutput, 0.4);
+    wing.set(ControlMode.PercentOutput, 0.35);
   }
 
   @Override
   public void stop() {
     intake.set(ControlMode.PercentOutput, 0);
+    middle.set(ControlMode.PercentOutput, 0);
+    wing.set(ControlMode.PercentOutput, 0);
   }
 
   @Override
   public void reverse() {
     intake.set(ControlMode.PercentOutput, -0.85);
+    middle.set(ControlMode.PercentOutput, -0.4);
+    wing.set(ControlMode.PercentOutput, -0.35);
   }
 }

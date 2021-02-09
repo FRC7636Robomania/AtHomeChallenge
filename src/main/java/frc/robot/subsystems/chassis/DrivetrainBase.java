@@ -8,6 +8,7 @@
 package frc.robot.subsystems.chassis;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.kauailabs.navx.frc.AHRS;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motor.MotorFactory;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants.*;
 
@@ -25,11 +28,11 @@ import frc.robot.Constants.*;
  * Must be sure these objects will be instantiated only once
  */
 public class DrivetrainBase extends SubsystemBase {
-  protected static WPI_TalonFX leftMas  = new WPI_TalonFX(Motor.leftMaster);
-  protected static WPI_TalonFX leftFol  = new WPI_TalonFX(2);
-  protected static WPI_TalonFX rightMas = new WPI_TalonFX(3);
-  protected static WPI_TalonFX rightFol = new WPI_TalonFX(4);
-  protected AHRS ahrs = new AHRS(SPI.Port.kMXP);
+  protected static TalonFX leftMas  = new TalonFX(Motor.leftMaster);
+  protected static TalonFX leftFol  = new TalonFX(Motor.leftFollewer);
+  protected static TalonFX rightMas = new TalonFX(Motor.rightMaster);
+  protected static TalonFX rightFol = new TalonFX(Motor.rightFollower);
+  protected static AHRS ahrs = new AHRS(SPI.Port.kMXP);
   private   static boolean isFirst = true; 
   private SupplyCurrentLimitConfiguration supplyCurrentLimitConfiguration = new SupplyCurrentLimitConfiguration(true, 40, 50, 1);
 
@@ -56,14 +59,17 @@ public class DrivetrainBase extends SubsystemBase {
     rightMas.configSupplyCurrentLimit(supplyCurrentLimitConfiguration);
     MotorFactory.configLikePrevious(rightMas, Motor.isRightPhaseInvert, Motor.isRightMotorInvert);
     MotorFactory.configLikePrevious(rightFol, Motor.isRightPhaseInvert, Motor.isRightMotorInvert);
-    MotorFactory.voltageCompSaturation(rightMas, 11);
-    MotorFactory.voltageCompSaturation(leftMas,  11);
+    // MotorFactory.voltageCompSaturation(rightMas, 11);
+    // MotorFactory.voltageCompSaturation(leftMas,  11);
 
     MotorFactory.configPF(leftMas,  0, 0, 0);
     MotorFactory.configPF(rightMas, 0, 0, 0);
     leftFol.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
     rightFol.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
-    
+    rightMas.setNeutralMode(NeutralMode.Coast);
+    leftMas.setNeutralMode(NeutralMode.Coast);
+    // rightMas.setNeutralMode(NeutralMode.Brake);
+    // leftMas.setNeutralMode(NeutralMode.Brake);
     
     ahrs.reset();
   }

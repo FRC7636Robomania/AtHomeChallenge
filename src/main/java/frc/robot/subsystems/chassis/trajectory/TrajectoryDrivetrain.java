@@ -33,9 +33,9 @@ public class TrajectoryDrivetrain extends DrivetrainBase implements TrajectorySy
   SimpleMotorFeedforward feedForward 
     = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
   PIDController lpidcontroller 
-    = new PIDController(Constants.kP, 0, 0);
+    = new PIDController(Constants.kP, 0, Constants.kD);
   PIDController rpidcontroller 
-    = new PIDController(Constants.kP, 0, 0);
+    = new PIDController(Constants.kP, 0, Constants.kD);
 
   /**
    * Creates a new Drivetrain.
@@ -43,6 +43,8 @@ public class TrajectoryDrivetrain extends DrivetrainBase implements TrajectorySy
   public TrajectoryDrivetrain() {
     Shuffleboard.getTab("Auto").addNumber("x", this::getX);
     Shuffleboard.getTab("Auto").addNumber("y", this::getY);
+    lpidcontroller.setTolerance(0.0005);
+    rpidcontroller.setTolerance(0.0005);
   }
   /**
      * Provide feedforward controller
@@ -198,7 +200,7 @@ public class TrajectoryDrivetrain extends DrivetrainBase implements TrajectorySy
     //distance
     SmartDashboard.putNumber("leftDistants", getLeftPosition() * Motor.distancePerPulse);
     SmartDashboard.putNumber("rightDistants", getRightPosition() * Motor.distancePerPulse);
-    SmartDashboard.putNumber("Yaw", ahrs.getYaw());
+    SmartDashboard.putNumber("Yaw", -ahrs.getAngle());
     SmartDashboard.putNumber("x", getX());
     SmartDashboard.putNumber("Y", getY());
   }

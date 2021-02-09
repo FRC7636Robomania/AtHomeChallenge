@@ -13,11 +13,12 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * 一個預防忘記該實作哪些方法的類別，可以在每個程式中重複使用
  */
-public interface TrajectorySystem {
+public interface TrajectorySystem extends Subsystem{
     /**
      * Provide kinematics object, contain track width
      * 

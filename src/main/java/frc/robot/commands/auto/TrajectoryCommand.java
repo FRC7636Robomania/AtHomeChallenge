@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.chassis.trajectory.TrajectoryFactory;
 import frc.robot.subsystems.chassis.trajectory.TrajectorySystem;
 /**
@@ -26,37 +28,45 @@ public class TrajectoryCommand extends SequentialCommandGroup{
 
   private TrajectoryCommand(){}
 
-  public static SequentialCommandGroup build(Trajectory trajectory, TrajectorySystem drivetrain, 
-                                                  OutputMode mode, SubsystemBase... base){
+  public static SequentialCommandGroup build(TrajectorySystem drivetrain, 
+                                                  OutputMode mode, Subsystem base, Trajectory... trajectory){
+    SequentialCommandGroup commands = new SequentialCommandGroup();
     if(mode == OutputMode.SPEED){
-      return new SequentialCommandGroup( 
-        new InstantCommand(()->TrajectoryFactory.initPose(drivetrain, trajectory)),
-        new RamseteCommand(
-            trajectory, 
-            drivetrain::getPose, 
-            new RamseteController(), 
-            drivetrain.getKinematics(), 
-            drivetrain::setOutput, 
-            base),
-        new InstantCommand(()->drivetrain.setOutput(0, 0), base)
+        for(int i = 0; i < trajectory.length; ++i){
+          final int temp = i;
+          commands.addCommands(
+            new InstantCommand(()->TrajectoryFactory.initPose(drivetrain, trajectory[temp])),
+            new RamseteCommand(
+              trajectory[i], 
+              drivetrain::getPose, 
+              new RamseteController(Constants.b, Constants.zeta), 
+              drivetrain.getKinematics(), 
+              drivetrain::setOutput, 
+              base),
+          new InstantCommand(()->drivetrain.setOutput(0, 0), base)
           );
+        }
     }else {
-      return new SequentialCommandGroup( 
-        new InstantCommand(()->TrajectoryFactory.initPose(drivetrain, trajectory)),
-        new RamseteCommand(
-            trajectory, 
-            drivetrain::getPose, 
-            new RamseteController(), 
-            drivetrain.getFeedforward(),
-            drivetrain.getKinematics(), 
-            drivetrain::getSpeed,
-            drivetrain.getLeftPidController(),
-            drivetrain.getRightPidController(),
-            drivetrain::voltage, 
-            base),
+        for(int i = 0; i < trajectory.length; i++){
+          final int temp = i;
+          commands.addCommands(
+            new InstantCommand(()->TrajectoryFactory.initPose(drivetrain, trajectory[temp])),
+            new RamseteCommand(
+                trajectory[i], 
+                drivetrain::getPose, 
+                new RamseteController(Constants.b, Constants.zeta), 
+                drivetrain.getFeedforward(),
+                drivetrain.getKinematics(), 
+                drivetrain::getSpeed,
+                drivetrain.getLeftPidController(),
+                drivetrain.getRightPidController(),
+                drivetrain::voltage, 
+                base),
             new InstantCommand(()->drivetrain.voltage(0.0, 0.0), base)
           );
+        }
     }
+    return commands;
   }
 
 
