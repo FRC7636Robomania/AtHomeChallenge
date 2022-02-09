@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -32,6 +34,8 @@ public final class Constants {
 
     public static final double zeta = 0.7;
     public static boolean isBall = false;
+    public static SequentialCommandGroup next = null;
+    public static boolean isFinish = false;
 
     public static class Motor{
         public static final int leftMaster    = 20;

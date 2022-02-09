@@ -8,18 +8,18 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Path;
-import frc.robot.commands.CheckBlue;
-import frc.robot.commands.SpinForward;
+import frc.robot.commands.CheckBall;
 import frc.robot.commands.auto.TrajectoryCommand;
 import frc.robot.commands.auto.TrajectoryCommand.OutputMode;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.chassis.ControlDrivetrain;
@@ -32,6 +32,7 @@ import frc.robot.subsystems.chassis.trajectory.TrajectoryFactory;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
+
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   Joystick joystick = new Joystick(0);
@@ -41,6 +42,7 @@ public class RobotContainer {
   private static String[] path;
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   ControlDrivetrain controlDrivetrain = new ControlDrivetrain();
+  Arm arm = new Arm();
   Intake intake = new Intake();
   static boolean isG = false;
 
@@ -72,6 +74,10 @@ public class RobotContainer {
         controlDrivetrain));
   }
 
+  public void out(){
+    arm.out();
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -79,10 +85,15 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(joystick, 2).whenHeld(new InstantCommand(()->arm.in(), arm));
   }
 
   public static String getChoose() {
     return trajectoryName;
+  }
+
+  public void intakeSpin(){
+    intake.intakeForward();
   }
 
   /**
@@ -101,7 +112,8 @@ public class RobotContainer {
       // SmartDashboard.putBoolean("getAuto", true);
       t = new Trajectory[1];
       t[0] = TrajectoryFactory.getTrajectory(Path.find[0]);
-      command = TrajectoryCommand.build(syzygy, OutputMode.VOLTAGE, controlDrivetrain, t).andThen(new CheckBlue(syzygy, intake));
+      command = TrajectoryCommand.build(syzygy, OutputMode.VOLTAGE, controlDrivetrain, t)
+                  .andThen(new CheckBall(syzygy, intake));
     } else {
       t = new Trajectory[path.length];
       for (int i = 0; i < path.length; i++) {
@@ -109,12 +121,14 @@ public class RobotContainer {
       }
       command = TrajectoryCommand.build(syzygy, OutputMode.VOLTAGE, controlDrivetrain, t);
     }
+    if(isG){
+      command = new InstantCommand(()->arm.out(), arm).andThen(command);
+    }
     if(isG && trajectoryName != Path.find[0]){
       command = new InstantCommand(()->intake.forward())
                   .andThen(command)
                   .andThen(new InstantCommand(()->intake.stop()));
       isG = false;
-
     }
     return command;
   }

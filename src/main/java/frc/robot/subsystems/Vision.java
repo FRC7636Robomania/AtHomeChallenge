@@ -25,19 +25,19 @@ public class Vision extends SubsystemBase {
   
   public static boolean isRight(){
     double x = 0;
-    for(int i = 0; i < 3; i++){
-      x += table.getEntry("x").getDouble(0.0);
+    for(int i = 0; i < 4; i++){
+      x += table.getEntry("x").getDouble(80.0);
     }
-    SmartDashboard.putBoolean("isRight", (x / 3) > 80);
-    return (x / 3) > 80;
+    SmartDashboard.putBoolean("isRight", (x / 4) > 80);
+    return (x / 4) > 80;
   }
 
   public static double getArea(){
     double a = 0;
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
       a += table.getEntry("area").getDouble(0.0);
     }
-    return a / 3;
+    return a / 4;
   }
 
   @Override

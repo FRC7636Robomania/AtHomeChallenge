@@ -26,6 +26,9 @@ public class Intake extends Spinable{
   public void periodic() {
     // This method will be called once per scheduler run
   }
+  public void intakeForward(){
+    intake.set(ControlMode.PercentOutput, 0.85);
+  }
 
   @Override
   public void forward() {
